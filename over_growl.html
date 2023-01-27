@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="icon-system.png">
+    <title>OverGrowl by RogueSignal.io</title>
+    <style id="page_style">
+      body{
+        background: #000000;
+        background-repeat: repeat;
+        background-image:  url('./assets/SkullsBG_green.png');
+        background-size: 50%;
+        font-family: Tahoma, sans-serif;
+      }
+      pre{
+        font-size:11px;
+      }
+      li{
+        font-size:11px;
+      }
+      a{
+        color: #000000;
+      }
+      button{
+        margin:4px;
+        padding: 4px;
+        cursor: pointer;
+        color: #9bae6b;
+        background-color: #2b3e2b88;
+        border-color: #4b5e4b88;
+        border-radius: 5px;
+      }
+      .details {
+        position: relative;
+        z-index: 1;
+        padding: 2px;
+        letter-spacing: 1px;
+        color: #00000088;
+      }
+      .modal {
+        background-color: #dbfedb33;
+        color: #fff;
+        border-radius: 15px;
+        padding: 2px;
+      }
+      .shadow {
+        box-shadow: 3px 3px 10px 4px rgba(0, 0, 0, 0.9);
+      }
+    </style>
+  	<script src="over_growl.js"></script>
+    <script>
+      var ogrowler,ogrowler2,overgrowler3
+      document.addEventListener("DOMContentLoaded", () => { 
+        ogrowler = new OverGrowl({type_config: { error: { duration: 0, close_button:true }}});
+        ogrowler3 = new OverGrowl({public: 'growler3', duration:0,});
+        ogrowler2 = new OverGrowl({public: 'growler2', unique: false, close_button: true, duration: 0, fade: 0, inline:false,
+          offset_x: 0,
+          css:`
+            #growler2-parent{
+              grid-row-gap: 1px;
+              opacity: 1;
+              background-color: #00000077;
+              border-radius: 15px;
+              left: 10px;
+              width: 300px;
+            }
+            .growler2-notice{
+              padding: 4px 0px 0px 0px;
+              border-width: 0px;
+            }
+            .growler2-notice>p{
+              font-size: 14px;
+              font-family: 'Brush Script MT', cursive;
+              font-weight: 400;
+              user-select: all;
+              cursor: copy;      
+            }
+        `});
+      })
+      function add_think1(growly) {
+        window[growly].add_type('thinking',`
+          border-color: rgb(60, 60, 80);
+          background-color: #000000;
+          color: #DDDDDD;
+        `,`
+          width: 30px;
+          height: 30px;
+          background-image: url('./assets/overgrowl-gear.png');
+          background-size: cover;      
+        `)
+        window[growly].success('Added "thinking" style to ' + growly + ' growler instance that will operate in the same display panel with different styles')
+      }
+      function add_think2(growly) {
+        window[growly].add_type('thinking',`
+          border-color: rgb(60, 60, 120);
+          background-color: #000030;
+          color: #DDDDFF;
+        `,`
+          background-image: url('./assets/overgrowl-gear.png');
+          background-size: cover;      
+        `)
+        window[growly].success('Added "thinking" style to ' + growly + ' growler instance that will operate in the same display panel with different styles')
+      }
+      var long_text = ''
++ '“You open the gates of the soul to let the dark flood of chaos flow into your order and meaning. If you marry the ordered to the chaos you produce the divine child, the supreme meaning beyond meaning and meaninglessness.”'
++ '<br>― C.G. Jung, The Red Book';
+    </script>
+  </head>
+  <body class="app">
+    <div class="grid">
+      <div class="item shadow modal">
+        <div class="details">
+          OverGrowl by <a href="http://www.roguesignal.io" target="_BLANK_">RogueSignal.IO</a><br>
+          MD5 Lib by <a href="https://github.com/blueimp/JavaScript-MD5" target="_BLANK_">blueimp</a><br><br>
+          Simple, clean and flexible Growler component.<br>
+          <ul>
+          <li> Default images and style all embedded in one JS file.
+          <li> Timing options & programmatic style overrides.
+          <li> Expand with new types beyond alert,error,info,success,system, and basic.
+          <li> Prevents (by default) duplication of messages in view.
+          <li> HTML content enabled.  Text auto select for copy.
+          <li> Close on panel or close button and/or timed close
+          </ul>
+          <button onclick="ogrowler.success('Well done, you won!');">Success Example</button>
+          <button onclick="ogrowler.info('We are here to inform you of important stuff.');">Info Example</button>
+          <button onclick="ogrowler.system('System going down for maintenance');">System Example</button>
+          <button onclick="ogrowler.alert('This is an alert');">Alert Example</button>
+          <button onclick="ogrowler.error('OMG!  <span style=color:#FF0000;>Bad things!</span>  Bad things!  This error is unique and will not timeout.');">Error Example</button>
+          <br>
+          <button onclick="ogrowler.growl_type(null,'No style here, baby!');">No Style Example</button>
+          <button onclick="ogrowler.info(long_text,{ duration: 8000});">Long Example</button>
+          <button onclick="ogrowler2.system('System going down for maintenance ... fast!');">NoUnique,NoFade,NoTimeout,CloseButton,CSS</button>
+          <br>
+          <button onclick="add_think1('ogrowler');">Add "thinking" type and style.</button> ➔➔➔ 
+          <button onclick="ogrowler.growl_type('thinking','Dave, I was thinking ... ',{ close_button: true });">Thinking (Safe) Example</button>
+          <button onclick="ogrowler.thinking('Dave?  Can you hear me, Dave?',{ close_button: true });">Thinking (Unsafe) Example</button>
+          <br>
+          <button onclick="add_think2('ogrowler3');">Add "thinking" to another instance.</button> ➔➔➔ 
+          <button onclick="ogrowler3.growl_type('thinking','Dave, I was thinking ... ',{ close_button: true });">Thinking (Safe) Example</button>
+          <button onclick="ogrowler3.thinking('Dave?  Can you hear me, Dave?',{ close_button: true });">Thinking (Unsafe) Example</button>
+          <pre style="overflow:auto;width:100%;">
+  Basic Use:
+    var over_growler
+    document.addEventListener("DOMContentLoaded", () => { 
+      over_growler = new OverGrowl();
+      over_growler.error('As an object method') 
+    })
+    ...  
+    See README for more.
+          </pre>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
