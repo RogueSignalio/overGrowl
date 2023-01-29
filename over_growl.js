@@ -1,12 +1,14 @@
 /*
 ===========================================================================
 Authors: BlackRogue01 & Carolina123
-Copyright: wwww.roguesignal.io, 2022
-Note:  Uses inline Blueimp MD5: https://github.com/blueimp/JavaScript-MD5
-===========================================================================
-  See README.txt
-*/
+Copyright: RogueSignal.io, wwww.roguesignal.io, 2022
+MD5 Function: Blueimp - https://github.com/blueimp/JavaScript-MD5
+---------------------------------------------------------------------------
+  Simple, clean, flexible & customizable Growler library.
 
+  See README.txt
+===========================================================================
+*/
 class OverGrowl {
   constructor(data={}) {
     this.el = data.el ? data.el : 'overgrowl'
