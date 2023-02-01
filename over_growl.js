@@ -184,6 +184,7 @@ class OverGrowl {
               border-radius: 15px;
               border-color: #000000;
               background-color: whitesmoke;
+              color: #222222;
               opacity: 0;
               transition: opacity 0.5s;
               width:300px;

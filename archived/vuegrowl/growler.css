@@ -1,0 +1,83 @@
+#growler-daddy{
+    grid-area: 1 / 1 / 4 / 3;
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    /* width: 30vw; */
+    display: grid;
+    grid-row-gap: 5px;
+    padding: 10px;
+    align-content: flex-start;
+    overflow: hidden;
+    z-index: 80;
+    opacity: 0.8;
+    /* border: 2px solid black; */
+}
+.growl-notice{
+    /* width: 30vw; */
+    /* height: 50px; */
+    padding: 2px 2px 2px 2px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 5px;
+    justify-content: flex-start;
+    align-content: center;
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 5px;
+    background-color: whitesmoke;
+    /* transform: translateX(30vw);
+    transition: transform 1s;
+     */
+    opacity: 0;
+    transition: opacity 0.5s;
+    box-shadow: 5px 5px 5px 0px rgba(68, 68, 68, 0.8);
+}
+.growl-notice>p{
+    font-size: 14px;
+    font-family: korolev-compressed, sans-serif;
+    font-weight: 400;
+}
+.notice--op{
+    opacity: 1;
+}
+#growler-daddy>.alert{
+    border-color: rgb(152, 37, 37);
+    background-color: #ffBBBB;
+}
+#growler-daddy>.info{
+    border-color: #27adff;
+    background-color: #DDDDFF;
+}
+#growler-daddy>.success{
+    border-color: rgb(89, 160, 89);
+    background-color: #BBffBB;
+}
+#growler-daddy>.system{
+    border-color: rgb(168, 146, 4);
+    background-color: #ffDDDD;
+}
+.growl-notice>.alert{
+    width: 20px;
+    height: 20px;
+    background-image: url('icon-alert.png');
+    background-size: cover;
+}
+.growl-notice>.info{
+    width: 20px;
+    height: 20px;
+    background-image: url('icon-info.png');
+    background-size: cover;
+}
+.growl-notice>.success{
+    width: 20px;
+    height: 20px;
+    background-image: url('icon-success.webp');
+    background-size: cover;
+}
+.growl-notice>.system{
+    width: 20px;
+    height: 20px;
+    background-image: url('icon-system.png');
+    background-size: cover;
+}
