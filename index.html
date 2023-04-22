@@ -103,6 +103,21 @@
         `)
         window[growly].success('Added "thinking" style to ' + growly + ' growler instance that will operate in the same display panel with different styles')
       }
+      function change_css(growly) {
+        var obj = window[growly]
+        var outcss = `
+          .${obj.name}-notice {
+              border-width: 4px;
+              border-style: solid;
+              border-radius: 15px;
+              border-color: #000000;
+              background-color: #DEBDAB;
+              color: #00FF00;
+          }
+
+          `
+        obj.append_css(outcss);
+      }
       var long_text = ''
 + '“You open the gates of the soul to let the dark flood of chaos flow into your order and meaning. If you marry the ordered to the chaos you produce the divine child, the supreme meaning beyond meaning and meaninglessness.”'
 + '<br>― C.G. Jung, The Red Book';

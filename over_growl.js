@@ -59,13 +59,16 @@ class OverGrowl {
     )
   }
 
-  apply_css(id=this.name, style=this.default_style()) {
+  apply_css(id=`${this.name}_style`, style=this.default_style()) {
     var s = document.getElementById(id)
     if (!s) { s = Object.assign(document.createElement('style'), { id: id, type: 'text/css' }) }
-//    var s = document.createElement('style');
-//    Object.assign(s,{ id: id, type: 'text/css' })
     s.appendChild(document.createTextNode(style))
     document.head.appendChild(s);
+    this.style_sheet = s;
+  }
+
+  append_css(style="") {
+    this.style_sheet.appendChild(document.createTextNode(style))
   }
 
   growler(data,opts) {
