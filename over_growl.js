@@ -71,6 +71,15 @@ class OverGrowl {
     this.style_sheet.appendChild(document.createTextNode(style))
   }
 
+  reset_css() {
+    var id =`${this.name}_style`
+    var style = this.default_style()
+    var s = document.getElementById(id)
+    s.textContent = style;
+    console.log(style)
+    document.head.appendChild(s);
+  }
+
   growler(data,opts) {
     this.msgStore ||= []
     var type_configs = {}

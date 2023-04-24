@@ -110,14 +110,15 @@
               border-width: 4px;
               border-style: solid;
               border-radius: 15px;
-              border-color: #000000;
-              background-color: #DEBDAB;
-              color: #00FF00;
+              border-color: #667799;
+              background-color: #000000;
+              color: #7788AA;
           }
 
           `
         obj.append_css(outcss);
       }
+
       var long_text = ''
 + '“You open the gates of the soul to let the dark flood of chaos flow into your order and meaning. If you marry the ordered to the chaos you produce the divine child, the supreme meaning beyond meaning and meaninglessness.”'
 + '<br>― C.G. Jung, The Red Book';
@@ -144,6 +145,9 @@
           <button onclick="ogrowler.alert('This is an alert');">Alert</button>
           <button onclick="ogrowler.error('OMG!  <span style=color:#FF0000;>Bad things!</span>  Bad things!  This error is unique and will not timeout.');">Error</button>
           <button onclick="ogrowler.growl_type(null,'No style here, baby!');">No Style</button>
+          <br>
+          <button onclick="change_css('ogrowler'); ogrowler.growl_type(null,'New style here, baby!');">Change Style</button>
+          <button onclick="ogrowler.reset_css(); ogrowler.growl_type(null,'Old style here, baby!');">Reset Style</button>
           <br>
           <button onclick="ogrowler.info(long_text,{ duration: 9000});">Long text + custom duration</button>
           <button onclick="ogrowler2.system('System going down for maintenance ... fast!');">NoUnique,NoFade,NoTimeout,CloseButton,CSS</button>
