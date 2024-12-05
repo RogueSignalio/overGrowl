@@ -1,6 +1,5 @@
 Authors: BlackRogue01 & Carolina123
 Copyright: RogueSignal.io, 2022 - http://wwww.roguesignal.io
-Git: 
 Note:  Uses inline Blueimp MD5: https://github.com/blueimp/JavaScript-MD5
 
 Use:
