@@ -16,6 +16,7 @@ class OverGrowl {
     this.name = data.public ? data.public : 'growler'
     this.options = {
       inline: true,
+      type_configs: [],
       ...data
     }
     this.embedded = (this.el == 'overgrowl') ? false : true
