@@ -30,6 +30,7 @@ class OverGrowl {
     document.body.prepend(e)
     this.parent = p
     this.parent.counter ||= 0
+    this.parent.growls = []
 
     // Set up methods by built-in type names.
     for(let type of ['success','alert','info','system','error','growl']) {
@@ -100,7 +101,6 @@ class OverGrowl {
       ...type_configs,
       ...opts
     }
-//    console.log(options);
     this.parent.counter++;
 
     if (options.unique) {
@@ -135,6 +135,7 @@ class OverGrowl {
     parent.style.visibility = 'visible';
     grDiv.style.transition = 'opacity ' + (options.fade > 0 ? options.fade / 1000 : 0.01) + 's';
     parent.appendChild(grDiv)
+    parent.growls.push(grDiv)
 
     setTimeout(()=>{
       grDiv.classList.add(`${this.name}-notice--op`)
@@ -147,7 +148,13 @@ class OverGrowl {
     }
   }
 
-  // Use try to just ignore removals happening from other source before timer remove triggers.
+  clearGrowls () {
+    this.parent.growls.forEach( function(gr,i) {
+      this.removeGrowl(gr,{ fade: this.options.fade })
+    }.bind(this))
+  }
+
+  // Use try to just ignore removals happening from other source before timer removes triggers.
   removeGrowl (e,options){
     try{
       e.classList.remove(`${this.name}-notice--op`)
@@ -155,6 +162,10 @@ class OverGrowl {
         try {
           parent = e.parentElement
           parent.removeChild(e)
+          var index = parent.growls.indexOf(e);
+          if (index !== -1) {
+            parent.growls.splice(index, 1);
+          }
           this.parent.counter--
           if (this.parent.counter == 0) {
             parent.style.visibility = 'hidden'
