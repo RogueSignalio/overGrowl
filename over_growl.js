@@ -97,7 +97,7 @@ class OverGrowl {
       offset_y: 20,
       close_button: false,
       z_index: 10000,
-      text_select: 'all',
+      text_select: 'none',
       css: null,
       ...this.options,
       ...type_configs,

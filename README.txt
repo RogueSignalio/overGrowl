@@ -25,6 +25,7 @@ OverGrowl Config Options (all optional):
   offset_y: Pixels to offset from top towards bottom
   close_button: True | False (default), otherwise click bubble closes, unless no_close == true.
   no_close: True | False (default), Bubble cannot be closed.
+  text_select: all | none (default), On click into text area, auto select all text.  USeful for error message copying.
   css: Append attached css, overriding the base css as needed.
   type_config: { <type>: { <Options> }} Where options can be used to set type options (see below) per type.
   public: global root name for DOM and CSS component, default = 'growler'.  Using the same name across instances will use same CSS etc.
