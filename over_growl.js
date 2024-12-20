@@ -2,6 +2,7 @@
 ===========================================================================
 Authors: BlackRogue01 & Carolina123
 Copyright: RogueSignal.io, wwww.roguesignal.io, 2022
+Version: 1.1
 MD5 Function: Blueimp - https://github.com/blueimp/JavaScript-MD5
 ---------------------------------------------------------------------------
   Simple, clean, flexible & customizable Growler library.
@@ -17,18 +18,19 @@ class OverGrowl {
       inline: true,
       ...data
     }
+    this.embedded = (this.el == 'overgrowl') ? false : true
+    this.parent_id = (this.options.inline && !this.embedded) ? 'growler' : this.name
 
-    this.parent_id = this.options.inline ? 'growler' : this.name
     this.apply_css();
     if (this.options.css) { this.apply_css(this.name + '_config_css',this.options.css) }
 
     var e = document.getElementById(this.el)
-    if (!e) { e = Object.assign(document.createElement('div'), { id: this.el }) }
+    if (!e) { e = Object.assign(document.createElement('div'), { id: this.el }); document.body.prepend(e) }
     var p = document.getElementById(this.parent_id+'-parent')
-    if (!p) { p = Object.assign(document.createElement('div'), { id: this.parent_id+'-parent' }) }
-    e.appendChild(p)
-    document.body.prepend(e)
+    if (!p) { p = Object.assign(document.createElement('div'), { id: this.parent_id+'-parent' }); e.prepend(p) }
+
     this.parent = p
+    this.element = e
     this.parent.counter ||= 0
     this.parent.growls = []
 
@@ -42,8 +44,9 @@ class OverGrowl {
     this.growler({ type: type, message: msg },options)
   }
 
-  add_type(type,noticecss='',iconcss='') {
+  add_type(type,options={},noticecss='',iconcss='') {
     this[type] = (msg,options={}) => { this.growl_type(type,msg,options) }
+    this.options.type_config[type] = options
     this.apply_type_style(type,noticecss,iconcss)
   }
 
@@ -77,7 +80,6 @@ class OverGrowl {
     var style = this.default_style()
     var s = document.getElementById(id)
     s.textContent = style;
-    console.log(style)
     document.head.appendChild(s);
   }
 
@@ -97,7 +99,7 @@ class OverGrowl {
       offset_y: 20,
       close_button: false,
       z_index: 10000,
-      text_select: 'none',
+      text_select: 'auto',
       css: null,
       ...this.options,
       ...type_configs,
@@ -124,18 +126,35 @@ class OverGrowl {
       Object.assign(closeElem,{ classList: `${this.name}-close`, innerHTML: '&#10006;' })
       grDiv.append(closeElem);
     }
+
     if (options.no_close == false) {
-      closeElem.addEventListener('click',() => { 
+      grDiv.addEventListener('click',() => { 
         this.removeGrowl(grDiv,options) 
       })
     }
-    textArea.style.userSelect = this.options.text_select
-    textArea.addEventListener('click',(e) => { e.stopPropagation(); })
+
+    if (options.text_select == 'all') { 
+      textArea.style.userSelect = 'all'
+      textArea.style.cursor = 'copy'      
+      textArea.addEventListener('click',(e) => { e.stopPropagation(); })
+    } else if ((options.text_select == 'auto') && (options.close_button)) {
+      textArea.style.userSelect = 'all'
+      textArea.style.cursor = 'copy'      
+      textArea.addEventListener('click',(e) => { e.stopPropagation(); })
+    } else {
+      textArea.style.userSelect = 'none'      
+    }
+
 
     parent = document.getElementById(this.parent_id + '-parent')
-    parent.style.zIndex = options.z_index;
-    parent.style.right = options.offset_x + 'px';
-    parent.style.top = options.offset_y + 'px';
+    if (this.embedded != true) { 
+      parent.style.zIndex = options.z_index;
+      parent.style.right = options.offset_x + 'px';
+      parent.style.top = options.offset_y + 'px';
+    } else {
+      parent.style.position = "inherit";
+    }
+
     parent.style.visibility = 'visible';
     grDiv.style.transition = 'opacity ' + (options.fade > 0 ? options.fade / 1000 : 0.01) + 's';
     parent.appendChild(grDiv)
@@ -242,8 +261,6 @@ class OverGrowl {
               font-size: 14px;
               font-family: korolev-compressed, sans-serif;
               font-weight: 400;
-              user-select: all;
-              cursor: copy;      
           }
           .${this.name}-notice--op{ opacity: 1; }
 
