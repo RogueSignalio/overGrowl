@@ -89,6 +89,7 @@ class OverGrowl {
     }
 
     var options = {
+      no_close: false,
       fade: 500,
       duration: 5000,
       unique: true,
@@ -96,6 +97,7 @@ class OverGrowl {
       offset_y: 20,
       close_button: false,
       z_index: 10000,
+      text_select: 'all',
       css: null,
       ...this.options,
       ...type_configs,
@@ -115,18 +117,20 @@ class OverGrowl {
       Object.assign(document.createElement('div'),{ classList: `${this.name}-icon ${data.type ? data.type : 'notype'}`}),
       Object.assign(textArea,{ innerHTML: data.message }),
     )
-
+    grDiv.hash = hash
     var closeElem = grDiv
     if (options.close_button) {
       closeElem = document.createElement('div')
       Object.assign(closeElem,{ classList: `${this.name}-close`, innerHTML: '&#10006;' })
       grDiv.append(closeElem);
     }
-    closeElem.addEventListener('click',() => { 
-      this.msgStore[hash] = false;
-      this.removeGrowl(grDiv,options) 
-    })
-    textArea.addEventListener('click',(e) => { e.stopPropagation() ; })
+    if (options.no_close == false) {
+      closeElem.addEventListener('click',() => { 
+        this.removeGrowl(grDiv,options) 
+      })
+    }
+    textArea.style.userSelect = this.options.text_select
+    textArea.addEventListener('click',(e) => { e.stopPropagation(); })
 
     parent = document.getElementById(this.parent_id + '-parent')
     parent.style.zIndex = options.z_index;
@@ -142,7 +146,6 @@ class OverGrowl {
     },200)
     if (options.duration > 0) {
       setTimeout(()=>{
-        this.msgStore[hash] = false;
         this.removeGrowl(grDiv,options);
       },options.duration)
     }
@@ -157,6 +160,7 @@ class OverGrowl {
   // Use try to just ignore removals happening from other source before timer removes triggers.
   removeGrowl (e,options){
     try{
+      this.msgStore[e.hash] = false;
       e.classList.remove(`${this.name}-notice--op`)
       setTimeout(() => {
         try {
@@ -216,7 +220,7 @@ class OverGrowl {
           }
           .${this.name}-close{
               font-size: 10px;
-              color: #888888;
+              color: #FF0000;
               border-style: solid;
               border-radius: 0px 15px 0px 5px;
               border-color: #00000088;
