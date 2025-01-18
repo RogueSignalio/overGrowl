@@ -1,22 +1,23 @@
-/*
-===========================================================================
-Authors: BlackRogue01 & Carolina123
-Copyright: RogueSignal.io, wwww.roguesignal.io, 2022
-Version: 1.1
-MD5 Function: Blueimp - https://github.com/blueimp/JavaScript-MD5
----------------------------------------------------------------------------
-  Simple, clean, flexible & customizable Growler library.
+//===========================================================================
+// OverPuzzle
+//---------------------------------------------------------------------------
+// Authors: BlackRogue01 (donovan@roguesignal.io)
+// Copyright: RogueSignal.io, wwww.roguesignal.io, 2022
+// Version: 1.1
+// MD5 Function: Blueimp - https://github.com/blueimp/JavaScript-MD5
+//---------------------------------------------------------------------------
+// Simple, clean, flexible & customizable Growler library.
+//
+// See README.txt
+//===========================================================================
 
-  See README.txt
-===========================================================================
-*/
 class OverGrowl {
   constructor(data={}) {
     this.el = data.el ? data.el : 'overgrowl'
     this.name = data.public ? data.public : 'growler'
     this.options = {
       inline: true,
-      type_config: [],
+      type_config: {},
       ...data
     }
     this.embedded = (this.el == 'overgrowl') ? false : true
@@ -94,7 +95,7 @@ class OverGrowl {
     var options = {
       no_close: false,
       fade: 500,
-      duration: 5000,
+      duration: 6000,
       unique: true,
       offset_x: 20,
       offset_y: 20,

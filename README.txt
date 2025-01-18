@@ -1,8 +1,13 @@
+OverGrowl - Simple, clean, flexible & customizable Growler library.
+ ---------------------------------------------------------------------------
+ Authors: BlackRogue01 (donovan@roguesignal.io)
+ Copyright: RogueSignal.io, wwww.roguesignal.io, 2022
+ Version: 1.1
+ MD5 Function: Blueimp - https://github.com/blueimp/JavaScript-MD5
+---------------------------------------------------------------------------
+ 
 DEMO: https://roguesignalio.github.io/overGrowl/
-
-Authors: BlackRogue01 & Carolina123
-Copyright: RogueSignal.io, 2022 - http://wwww.roguesignal.io
-Note:  Uses inline Blueimp MD5: https://github.com/blueimp/JavaScript-MD5
+JS CDN: 
 
 * Default images and style all embedded in one JS file.
 * Timing options & programmatic style overrides.
