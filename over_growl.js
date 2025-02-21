@@ -147,8 +147,13 @@ class OverGrowl {
       textArea.style.userSelect = 'none'      
     }
 
-
     parent = document.getElementById(this.parent_id + '-parent')
+    grDiv.style.width = '96%'
+    textArea.style.width = '98%'
+    textArea.style.maxHeight = (window.innerHeight > 300) ? `${(window.innerHeight/2)-40}px` : `${window.innerHeight-40}px`
+    textArea.style.overflow = 'auto'
+    textArea.style.marginTop = '20px'
+
     if (this.embedded != true) { 
       parent.style.zIndex = options.z_index;
       parent.style.right = options.offset_x + 'px';
@@ -216,6 +221,7 @@ class OverGrowl {
               overflow: hidden;
               visibility: hidden;
               z-index: -1000;
+              width:340px;
               opacity: 0.9;
               user-select: unset;
               cursor: pointer;
@@ -235,13 +241,12 @@ class OverGrowl {
               color: #222222;
               opacity: 0;
               transition: opacity 0.5s;
-              width:300px;
               box-shadow: 5px 5px 5px 0px rgba(18, 18, 18, 0.9);
               position: relative;
           }
           .${this.name}-close{
               font-size: 10px;
-              color: #FF0000;
+              color: #222222;
               border-style: solid;
               border-radius: 0px 15px 0px 5px;
               border-color: #00000088;

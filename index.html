@@ -107,6 +107,43 @@
         `)
         window[growly].success('Added "thinking" style to ' + growly + ' growler instance that will operate in the same display panel with different styles')
       }
+      function big_text() {
+        ogrowler.info(
+`<pre>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. In dapibus justo non mattis sollicitudin. 
+Integer nec semper nibh. Aenean cursus sem eu pretium vulputate. Vivamus lectus quam, pulvinar nec lacinia eget, 
+convallis vitae mauris. Fusce vitae nunc est. Nunc dapibus, turpis id porttitor semper, turpis diam gravida massa,
+eu viverra diam neque vel elit. Aliquam elit libero, molestie eu molestie et, convallis et justo.
+
+Sed risus libero, luctus non facilisis in, dapibus dapibus massa. Etiam eu molestie nunc, vitae rutrum arcu. Donec 
+vel mattis augue. Quisque diam magna, finibus eu mauris ac, elementum accumsan purus. In hac habitasse platea 
+dictumst. Vivamus tempor ex dolor, et vulputate massa volutpat in. Donec imperdiet id lectus a pharetra. Maecenas 
+facilisis, arcu et pretium eleifend, risus eros elementum urna, sit amet faucibus libero arcu mollis nibh. Nunc 
+dignissim enim sed sodales pellentesque. Aenean imperdiet urna quam, id auctor metus egestas et. Sed in tincidunt 
+arcu. Duis mollis feugiat velit id rhoncus.
+
+Etiam ultrices, enim ultricies tristique pellentesque, nisl orci congue massa, vitae eleifend risus lectus nonturpis. 
+Suspendisse dignissim viverra neque sed cursus. In vel ante ac ex laoreet ornare. Nunc sodales eleifend mi sed 
+imperdiet. Sed egestas tellus sem, mollis lobortis ex consectetur ac. Curabitur feugiat erat non vehicula placerat. 
+Phasellus auctor diam sit amet velit maximus, sit amet vehicula tortor congue. Aenean semper accumsan dapibus. Nunc 
+eget pretium lectus. Sed magna est, condimentum ac elementum id, placerat at nunc. Etiam faucibus vitae nunc eu 
+imperdiet. Etiam ac est nec risus consequat molestie. Fusce urna orci, viverra non fermentum id, condimentum quis 
+nisi. Nullam accumsan purus in malesuada viverra. In et quam mi. Aenean et est sed turpis pretium maximus. 
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. In dapibus justo non mattis sollicitudin. 
+Integer nec semper nibh. Aenean cursus sem eu pretium vulputate. Vivamus lectus quam, pulvinar nec lacinia eget, 
+convallis vitae mauris. Fusce vitae nunc est. Nunc dapibus, turpis id porttitor semper, turpis diam gravida massa,
+eu viverra diam neque vel elit. Aliquam elit libero, molestie eu molestie et, convallis et justo.
+
+Sed risus libero, luctus non facilisis in, dapibus dapibus massa. Etiam eu molestie nunc, vitae rutrum arcu. Donec 
+vel mattis augue. Quisque diam magna, finibus eu mauris ac, elementum accumsan purus. In hac habitasse platea 
+dictumst. Vivamus tempor ex dolor, et vulputate massa volutpat in. Donec imperdiet id lectus a pharetra. Maecenas 
+facilisis, arcu et pretium eleifend, risus eros elementum urna, sit amet faucibus libero arcu mollis nibh. Nunc 
+dignissim enim sed sodales pellentesque. Aenean imperdiet urna quam, id auctor metus egestas et. Sed in tincidunt 
+arcu. Duis mollis feugiat velit id rhoncus.
+</pre>`,{ close_button: true, duration: 0 });
+      }
+
       function change_css(growly) {
         var obj = window[growly]
         var outcss = `
@@ -152,6 +189,7 @@
           <button onclick="ogrowler.error('OMG!  <span style=color:#FF0000;>Bad things!</span>  Bad things!  This error is unique and will not timeout.');">Error</button>
           <button onclick="ogrowler.growl_type(null,'No style here, baby!');">No Style</button>
           <br>
+          <button onclick="big_text()">Big Text</button>
           <button onclick="change_css('ogrowler'); ogrowler.growl_type(null,'New style here, baby!');">Change Style</button>
           <button onclick="ogrowler.reset_css(); ogrowler.growl_type(null,'Old style here, baby!');">Reset Style</button>
           <br>
