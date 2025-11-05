@@ -3,31 +3,37 @@
 //---------------------------------------------------------------------------
 // Authors: BlackRogue01 (donovan@roguesignal.io)
 // Copyright: RogueSignal.io, wwww.roguesignal.io, 2022
-// Version: 1.1
-// MD5 Function: Blueimp - https://github.com/blueimp/JavaScript-MD5
+// License: MIT
+// Embedded MD5 Function: Blueimp - https://github.com/blueimp/JavaScript-MD5
 //---------------------------------------------------------------------------
-// Simple, clean, flexible & customizable Growler library.
+// Simple, clean, flexible, standalone & customizable Growler library.
 //
 // See README.txt
+// Todo: More comments and docs...
 //===========================================================================
 
 class OverGrowl {
   constructor(data={}) {
-    this.el = data.el ? data.el : 'overgrowl'
-    this.name = data.public ? data.public : 'growler'
+    this.target = data.target ? data.target : 'overgrowl'
     this.options = {
       inline: true,
+      banner: false,
       type_config: {},
       ...data
     }
-    this.embedded = (this.el == 'overgrowl') ? false : true
+    if (data.target && !data.name) {
+       this.name = 'og_' + data.target
+    } else {
+      this.name = data.name ? data.name : 'growler'
+    }
+    this.embedded = (this.target == 'overgrowl') ? false : true
     this.parent_id = (this.options.inline && !this.embedded) ? 'growler' : this.name
 
-    this.apply_css();
+    this.style_sheet = this.apply_css();
     if (this.options.css) { this.apply_css(this.name + '_config_css',this.options.css) }
 
-    var e = document.getElementById(this.el)
-    if (!e) { e = Object.assign(document.createElement('div'), { id: this.el }); document.body.prepend(e) }
+    var e = document.getElementById(this.target)
+    if (!e) { e = Object.assign(document.createElement('div'), { id: this.target }); document.body.prepend(e) }
     var p = document.getElementById(this.parent_id+'-parent')
     if (!p) { p = Object.assign(document.createElement('div'), { id: this.parent_id+'-parent' }); e.prepend(p) }
 
@@ -37,23 +43,31 @@ class OverGrowl {
     this.parent.growls = []
 
     // Set up methods by built-in type names.
-    for(let type of ['success','alert','info','system','error','growl']) {
+    for(let type of ['success','alert','info','system','error','growl','basic','negative']) {
       this[type] = (msg,options={}) => { this.growl_type(type,msg,options) }
     }
+
+    if (this.options.banner == true) {
+      this.parent.classList.add('banner')
+      this.options.offset_x = 'inherit'
+      this.options.offset_y = 'inherit'
+    }
+
   }
 
   growl_type(type,msg,options={}) {
     this.growler({ type: type, message: msg },options)
   }
 
-  add_type(type,options={},noticecss='',iconcss='') {
-    this[type] = (msg,options={}) => { this.growl_type(type,msg,options) }
+  add_type(type,options={},noticecss='',iconcss='',rawcss='') {
+    this[`og_${type}`] = (msg,options={}) => { this.growl_type(type,msg,options) }
     this.options.type_config[type] = options
-    this.apply_type_style(type,noticecss,iconcss)
+    this.apply_type_style(type,noticecss,iconcss,rawcss)
   }
 
-  apply_type_style(type,noticecss='',iconcss='') {
-    this.apply_css(this.name+'_'+type+'_style',
+  apply_type_style(type,noticecss='',iconcss='',rawcss='') {
+    console.log(this.name + '_' + type +'_style')
+    this.apply_css(this.name + '_' + type +'_style',
       `
         .${this.name}-notice.${type}{
           ${noticecss}
@@ -61,28 +75,36 @@ class OverGrowl {
         .${this.name}-icon.${type}{
           ${iconcss}
         }
+        ${rawcss}
       `
     )
   }
 
   apply_css(id=`${this.name}_style`, style=this.default_style()) {
+    console.log(id)
     var s = document.getElementById(id)
-    if (!s) { s = Object.assign(document.createElement('style'), { id: id, type: 'text/css' }) }
+    if (s == null) { 
+      s = Object.assign(document.createElement('style'), { id: id, type: 'text/css' }) 
+      document.head.appendChild(s);
+    }
     s.appendChild(document.createTextNode(style))
-    document.head.appendChild(s);
-    this.style_sheet = s;
+    return s
   }
 
   append_css(style="") {
-    this.style_sheet.appendChild(document.createTextNode(style))
+    var s = document.getElementById(`${this.name}_style`)
+    s.appendChild(document.createTextNode(style))
+    return s
   }
 
+  // TODO: When using no inline style, this breaks after a new type is applied.  Not sure why... and don't care much
   reset_css() {
-    var id =`${this.name}_style`
     var style = this.default_style()
-    var s = document.getElementById(id)
-    s.textContent = style;
-    document.head.appendChild(s);
+    if (`${this.name}_style` != 'growler_style') {
+      let gs = document.getElementById(id)
+      gs.textContent = style;
+    }
+    this.style_sheet.textContent = style;
   }
 
   growler(data,opts) {
@@ -93,39 +115,60 @@ class OverGrowl {
     }
 
     var options = {
-      no_close: false,
-      fade: 500,
-      duration: 6000,
-      unique: true,
-      offset_x: 20,
-      offset_y: 20,
       close_button: false,
-      z_index: 10000,
-      text_select: 'auto',
       css: null,
+      duration: 5500,
+      fade: 1000,
+      icon_flicker: true,
+      max_height: null,
+      no_close: false,
+      offset_x: 10,
+      offset_y: 10,
+      text_select: 'auto',
+      unique: true,
+      z_index: 10000,
+      flicker: false,
       ...this.options,
       ...type_configs,
       ...opts
     }
     this.parent.counter++;
 
+    // Fail over to default, aka basic mode if needed.
+    if (this.check_type(data.type) != true) {
+      data.type = 'basic'
+    }
+
+    // If options.unique enabled, hash the message and don't allow duplicates.
     if (options.unique) {
       var hash = md5(data.message);
       if (this.msgStore[hash] == true) return;
       this.msgStore[hash] = true
     }
 
-    var grDiv = Object.assign(document.createElement('div'),{ classList: `${this.name}-notice ${data.type}` })
-    var textArea = Object.assign(document.createElement('p'))
+    // Set up flickering of icon or notice body if enabled.
+    // options.flicker = true/false
+    // options.icon_flicker = true/false    
+    var flicker = '';
+    var icon_flicker = '';
+    if (options['icon_flicker'] == true) {
+      icon_flicker = 'icon-flicker'
+    }
+    if (options['flicker'] == true) {
+      flicker = 'flicker'      
+    }
+
+    var grDiv = Object.assign(document.createElement('div'),{ classList: `growler-notice ${this.name}-notice ${data.type} ${flicker}` })
+    var textArea = Object.assign(document.createElement('p'),{ classList: `growler-text ${this.name}-text`})
     grDiv.append(
-      Object.assign(document.createElement('div'),{ classList: `${this.name}-icon ${data.type ? data.type : 'notype'}`}),
+      Object.assign(document.createElement('div'),{ classList: `growler-icon ${this.name}-icon ${data.type} ${icon_flicker}`}),
       Object.assign(textArea,{ innerHTML: data.message }),
     )
     grDiv.hash = hash
     var closeElem = grDiv
     if (options.close_button) {
       closeElem = document.createElement('div')
-      Object.assign(closeElem,{ classList: `${this.name}-close`, innerHTML: '&#10006;' })
+      Object.assign(closeElem,{ classList: `growler-close ${this.name}-close`, innerHTML: '🗙' }) //'&#10006;' })
       grDiv.append(closeElem);
     }
 
@@ -135,24 +178,20 @@ class OverGrowl {
       })
     }
 
-    if (options.text_select == 'all') { 
+    if ((options.text_select == 'all') || ((options.text_select == 'auto') && (options.close_button))) {
       textArea.style.userSelect = 'all'
       textArea.style.cursor = 'copy'      
-      textArea.addEventListener('click',(e) => { e.stopPropagation(); })
-    } else if ((options.text_select == 'auto') && (options.close_button)) {
-      textArea.style.userSelect = 'all'
-      textArea.style.cursor = 'copy'      
-      textArea.addEventListener('click',(e) => { e.stopPropagation(); })
+      textArea.addEventListener('click',(e) => {
+        this.elementTextToClip(e.target)
+        e.stopPropagation(); 
+      })
     } else {
       textArea.style.userSelect = 'none'      
     }
 
     parent = document.getElementById(this.parent_id + '-parent')
-    grDiv.style.width = '96%'
-    textArea.style.width = '98%'
     textArea.style.maxHeight = (window.innerHeight > 300) ? `${(window.innerHeight/2)-40}px` : `${window.innerHeight-40}px`
-    textArea.style.overflow = 'auto'
-    textArea.style.marginTop = '20px'
+    // grDiv.style.width = '96%'
 
     if (this.embedded != true) { 
       parent.style.zIndex = options.z_index;
@@ -163,13 +202,20 @@ class OverGrowl {
     }
 
     parent.style.visibility = 'visible';
-    grDiv.style.transition = 'opacity ' + (options.fade > 0 ? options.fade / 1000 : 0.01) + 's';
+    let fade_time = (options.fade > 0 ? options.fade : 200)
+    grDiv.style.transition = `max-height ${fade_time}ms linear, 
+      opacity ${fade_time}ms ${100}ms ease-in-out
+    `;
+    // Was testing scale() transform transitions.  Meh.
+    // transform ${(fade_time / 2 )}s linear, 
+
     parent.appendChild(grDiv)
     parent.growls.push(grDiv)
 
     setTimeout(()=>{
-      grDiv.classList.add(`${this.name}-notice--op`)
+      grDiv.classList.add('growler-notice--op',`${this.name}-notice--op`)
     },200)
+
     if (options.duration > 0) {
       setTimeout(()=>{
         this.removeGrowl(grDiv,options);
@@ -177,17 +223,28 @@ class OverGrowl {
     }
   }
 
-  clearGrowls () {
+  check_type(type) {
+    if ((type == undefined) || (type == '') || type == 'growl') {
+      return false
+    }
+    if ((this[type] == undefined) && (this[`og_${type}`] == undefined)) {
+      return false
+    }
+    return true
+  }
+
+  // Clears all open growls for this growler object.
+  clearGrowls() {
     this.parent.growls.forEach( function(gr,i) {
       this.removeGrowl(gr,{ fade: this.options.fade })
     }.bind(this))
   }
 
   // Use try to just ignore removals happening from other source before timer removes triggers.
-  removeGrowl (e,options){
+  removeGrowl(e,options){
     try{
       this.msgStore[e.hash] = false;
-      e.classList.remove(`${this.name}-notice--op`)
+      e.classList.remove('growler-notice--op',`${this.name}-notice--op`)
       setTimeout(() => {
         try {
           parent = e.parentElement
@@ -202,101 +259,183 @@ class OverGrowl {
             parent.style.zIndex = -1000
           }
         } catch{}
-      },options.fade + 100);
+      },options.fade + 10);
     }
     catch{}
+  }
+
+  elementTextToClip(elem) {
+    let growl_opt = { duration: 2000, fade: 300 }
+    if (!navigator.clipboard) {
+      try {
+        elem.focus();
+        elem.select();
+        var resp = document.execCommand('copy');
+        if (resp == 'successful') {
+          this.growl('Copying to clipboard was successful!!');
+          this.clearSelection()
+        } else {
+          this.growl('Oops, unable to copy, use CTRL-C.',growl_opt);
+        }
+      } catch (err) {
+        this.growl('Oops, unable to copy, use CTRL-C.',growl_opt);
+        console.log(err);
+      }
+    } else {
+      navigator.clipboard.writeText(elem.textContent).then(function() {
+        this.growl('Copying to clipboard was successful!',growl_opt);
+        this.clearSelection()
+      }.bind(this), function(err) {
+        this.growl('Could not copy text, use CTRL-C.',growl_opt)
+        console.log(err);
+      }.bind(this));
+    }
+  }
+
+  clearSelection() {
+    if (window.getSelection) {window.getSelection().removeAllRanges();}
+    else if (document.selection) {document.selection.empty();}
   }
 
   default_style() {
       return `
           #${this.name}-parent{
+              position: fixed;
               grid-area: 1 / 1 / 4 / 3;
-              position: absolute;
-              top: 20px;
-              right: 20px;
               display: grid;
               grid-row-gap: 5px;
-              padding: 10px;
               align-content: flex-start;
               overflow: hidden;
               visibility: hidden;
               z-index: -1000;
-              width:340px;
+              width: calc(100vw - 40px);
+              max-width: 340px;
               opacity: 0.9;
               user-select: unset;
               cursor: pointer;
+          }
+          #${this.name}-parent.banner{
+            max-width: 100%;
+            width: 100%;
+          }
+          .${this.name}-close{
+              font-size: 14px;
+              color: #DD2222;
+              border-style: solid;
+              border-radius: 0px 10px 0px 5px;
+              border-color: #AA222288;
+              border-width:0px 0px 2px 2px;
+              text-align:center;
+              position: absolute;
+              width:16px;
+              right: 0px;
+              top: 0px;
+              opacity: 0.9;
+              user-select: none;
+              cursor: pointer;      
+              background-color: #FF555566;
+          }
+          .${this.name}-text{
+              width: 100%;
+/*              min-width: 260px; */
+              overflow: auto;
+              scrollbar-color: #EEEEEE60 #00000050;
+              scrollbar-width: thin;
+              margin-top: 20px;
+              font-size: 14px;
+              font-weight: bold;
+          }
+          .${this.name}-text>pre{
+              margin-top: 5px;
           }
           .${this.name}-notice{
               padding: 2px 2px 2px 2px;
               display: grid;
               grid-template-columns: auto auto;
-              grid-column-gap: 5px;
+              grid-column-gap: 0px;
               justify-content: flex-start;
               align-content: center;
-              border-width: 4px;
+              border-width: 5px;
               border-style: solid;
               border-radius: 15px;
               border-color: #000000;
               background-color: whitesmoke;
-              color: #222222;
-              opacity: 0;
-              transition: opacity 0.5s;
               box-shadow: 5px 5px 5px 0px rgba(18, 18, 18, 0.9);
               position: relative;
-          }
-          .${this.name}-close{
-              font-size: 10px;
               color: #222222;
-              border-style: solid;
-              border-radius: 0px 15px 0px 5px;
-              border-color: #00000088;
-              border-width:0px 0px 1px 0px;
-              text-align:center;
-              position: absolute;
-              padding:0px;
-              padding-right:2px;
-              padding-top:2px;
-              margin:0px;
-              top:0px;
-              right:-1px;
-              width:20px;
-              opacity: 0.8;
-              user-select: none;
-              cursor: pointer;      
-          }
-          .${this.name}-notice>p{
+              opacity: 0;
               font-size: 14px;
               font-family: korolev-compressed, sans-serif;
-              font-weight: 400;
+              font-weight: 500;
+              background: linear-gradient(to bottom, rgba(255,255,255,0.2) -2%, rgba(0,0,0,0.2) 102%);
+              margin: 8px;
+              margin-top: 0px;
+              margin-left: 0px;
           }
-          .${this.name}-notice--op{ opacity: 1; }
+          #${this.name}-notice.banner{
+          }
 
+          .${this.name}-notice--op{ 
+            opacity: 1; 
+            max-height: 600px;
+          }
+          .${this.name}-notice>p{
+          }
+          .${this.name}-notice.negative{ 
+              border-color: whitesmoke;
+              background-color: black;
+              color: whitesmoke;
+          }
+          .${this.name}-notice.basic{ 
+              border-color: #000000;
+              background-color: whitesmoke;
+              color: #222222;
+          }
           .${this.name}-notice.alert{
               border-color: rgb(152, 132, 37);
               background-color: #ffdfAA;
+              color: #444422;
+              font-weight: bold;
           }
           .${this.name}-notice.error{
               border-color: rgb(152, 37, 37);
               background-color: #ffBBBB;
+              color: #552222;
+              font-weight: bold;
           }
           .${this.name}-notice.info{
               border-color: #27adff;
               background-color: #DDDDFF;
+              color: #334455;
           }
           .${this.name}-notice.success{
               border-color: rgb(89, 160, 89);
               background-color: #BBffBB;
+              color: #115511;
           }
           .${this.name}-notice.system{
               border-color: rgb(168, 102, 4);
               background-color: #ffbc9a;
+              color: #553322;
           }
           .${this.name}-icon{
               width: 40px;
-              height: 40px;
+              max-height: 40px;
               background-size: cover;
+              margin-right:10px;
+              -webkit-filter: drop-shadow(2px 2px 4px #222) brightness(1);
+              filter: drop-shadow(2px 2px 4px #222) brightness(1);
           }
-          .${this.name}-icon.notype{
+          .icon-flicker {
+              animation: 2s ease-in-out infinite reverse icon_flash;
+          }
+          .flicker {
+              animation: 2s ease-in-out infinite reverse text_flash;
+          }
+          .png-shadow{
+              filter: drop-shadow(3px 3px 3px #222);
+          }
+          .${this.name}-icon.basic, .${this.name}-icon.negative{
               width: 0px;
               height: 0px;
           }
@@ -314,6 +453,24 @@ class OverGrowl {
           }
           .${this.name}-icon.system{
               background-image: url('data:image/png;base64,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');
+          }
+          @keyframes icon_flash {
+              0%,85% {
+              -webkit-filter: drop-shadow(2px 2px 4px #222) brightness(1);
+              filter: drop-shadow(2px 2px 4px #222) brightness(1);
+              }
+              100% {
+              -webkit-filter: drop-shadow(2px 2px 4px #222) brightness(1.8);
+              filter: drop-shadow(2px 2px 4px #222) brightness(1.8);
+              }
+          }
+          @keyframes text_flash {
+              0%,85% {
+                filter: brightness(1);
+              }
+              100% {
+                filter: brightness(1.5);
+              }
           }
       `
   }

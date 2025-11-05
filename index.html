@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="assets/favicon.png">
-    <title>OverGrowl by RogueSignal.io</title>
+    <title>OverGrowl by RogueSignal.io</title>    
     <style id="page_style">
       body{
         background: #000000;
@@ -14,33 +14,57 @@
         background-size: 40%;
         font-family: Tahoma, sans-serif;
         font-size:18px;
+        margin:2px;
       }
       pre{
         font-size:16px;
       }
       li{
-        font-size:16px;
+        font-size:14px;
       }
-      a{
-        color: #000000;
+      a {
+        background-color: #00000050;
+        padding: 3px;
+        border-radius: 5px;
+        color: #8dff33;
+        margin: 4px;
       }
       button{
         margin:3px;
         padding: 4px;
         cursor: pointer;
-        color: #9bae6b;
+        color: #FbDe4b;
         background-color: #2b3e2b88;
-        border-color: #4b5e4b88;
+        border-color: #2b3e2b;
         border-radius: 5px;
+        border-width: 3px;
+        border-style: solid;
         font-size:16px;
       }
-      .details {
+      #demo-area {
+        width: 80vw;
+        min-width: 350px;
+        max-width: 640px;
+      }
+      .title {
         position: relative;
         z-index: 1;
         padding: 2px;
         letter-spacing: 1px;
-        color: #CbBe6b;
-
+        color: #DbBe2b;
+        margin: 4px;
+        font-size:20px;
+      }
+      .details {
+        z-index: 1;
+        padding: 2px;
+        letter-spacing: 1px;
+        border-radius: 15px;
+        background-color: #2b3e2b44;
+        color: #EbCe8b;
+        margin: 8px;
+        padding: 8px;
+        font-size:16px;
       }
       .modal {
         background-color: #dbfedb33;
@@ -52,65 +76,162 @@
         box-shadow: 3px 3px 10px 4px rgba(0, 0, 0, 0.9);
       }
     </style>
-  	<script src="over_growl.js"></script>
+  </head>  
+  <body class="app">
+    <div class="grid" id="demo-area">
+      <div class="item shadow modal">
+        <div class="title">
+          <strong>OverGrowl</strong> by <a href="http://www.roguesignal.io" target="_BLANK_">RogueSignal.IO</a>
+        </div>
+        <div class="details" id="details">
+          Simple, clean and flexible "growl" style notification component.<br>
+          <ul id="features" style="display: none;">
+          <li> Default images and style all embedded in one JS file for instant use via one file.
+          <li> Timing options for fade and duration & programmatic style overrides.
+          <li> Expand with new types beyond alert,error,info,success,system and basic.
+          <li> Prevents (by default) duplication of messages in view.
+          <li> HTML content enabled. Glint visual on icon or body to draw attention to growl.
+          <li> Option for text auto select and auto copy to clipboard with failover.
+          <li> Close on panel click, close X button, and/or timed close. 
+          <li> Floats left, right, or embed in element and sticks to viewport top.
+          <li> Banner modes, embed in elements, float left or right over UI, and share multiple instances in one element, but with different notice tyles.
+          <li> And much more - View this source for these examples.
+          </ul>
+          <br>
+          <a href="javascript:toggle_features('toggle_features')" id='toggle_features'>Show Features</a>
+          ||
+          <a href="https://github.com/RogueSignalio/overGrowl" target="_BLANK_"> Git Project</a>
+        </div>
+        <div class="examples" id="examples">
+          <button onclick="ogrowler.success('Well done, you won! 😀');">Success</button>
+          <button onclick="ogrowler.info('We are here to inform you of important stuff.');">Info</button>
+          <button onclick="ogrowler.system('System going down for maintenance');">System</button>
+          <button onclick="ogrowler.alert('🔥🔥 This is an alert!!! 🔥🔥');">Alert</button>
+          <button onclick="ogrowler.error(`OMG! <span style=color:#FF0000;>Bad things!</span>  This error will not timeout, it flashes body for attention, and clicking text will copy it.<br><div style='text-align:center;width:100%;'>👿🔥👿🔥👿</div>`);">Error</button>
+          <button onclick="ogrowler.growl_type('','No style here, baby!');">No Style</button>
+          <button onclick="ogrowler.negative('<img src=./assets/RogueSignal_FullLogo.png style=width:100%;>')">Image</button>
+          <br>
+          <button onclick="big_text()">Big Text, No Fade</button>
+          <button onclick="change_css('ogrowler'); ogrowler.growl_type(null,'New style here, baby!');">Change Basic Style</button>
+          <button onclick="ogrowler.reset_css(); ogrowler.growl_type(null,'Old style here, baby!');">Reset Basic Style</button>
+          <br>
+          <button onclick="ogrowler.info(long_text,{ duration: 9000});">Long text + custom duration</button>
+          <br>
+          <button onclick="for (const e of [3,2,1]) { ogrowler2.system(`System going down for maintenance...`); }">NoUnique, NoFade, NoTimeout, CloseButton, Unique CSS, left handed container.</button>
+          <br>
+          <button onclick="add_think1('ogrowler');">New "thinking" type w/style.</button> ➔ 
+          <button onclick="ogrowler.growl_type('thinking','Dave, I was thinking ... ',{ close_button: true });">Call with growl_type()</button>
+          <br>
+          <button onclick="add_think2('ogrowler3');">New "thinking" w/2nd instance, slow dur/fade.</button> ➔ 
+          <button onclick="ogrowler3.growl_type('thinking','Dave?  Can you hear me, Dave? ',{ close_button: true });">Call with growl_type()</button>
+          <br>
+          <button onclick="ogrowler5.error('Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem...')">Inline Banner</button>
+          <button onclick="ogrowler6.success('Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem... Banner wide mayhem...')">Embedded Banner</button>
+          <br>
+          <div id="embedded_growl" style="max-width:500px;overflow-y:auto;max-height: 200px;"></div>
+          <button onclick="for (const e of [1,2,3]) { ogrowler4.error('This is an alert embedded in inner div: ' + `${e}`); }">Inside Element</button>
+          <button onclick="ogrowler.clearGrowls();ogrowler2.clearGrowls();ogrowler3.clearGrowls();ogrowler4.clearGrowls();ogrowler5.clearGrowls();ogrowler6.clearGrowls();">Clear Growls</button>
+        </div>
+      </div>
+    </div>
+  </body>
+    <script src="over_growl.js"></script>
     <script>
       var ogrowler,ogrowler2,overgrowler3
       document.addEventListener("DOMContentLoaded", () => { 
-        ogrowler = new OverGrowl({type_config: { error: { duration: 0, close_button:true }}});
-        ogrowler3 = new OverGrowl({public: 'growler3', duration:3000 });
-        ogrowler4 = new OverGrowl({el: 'embedded_growl', public: 'growler4', close_button: true, duration: 0});
-        ogrowler2 = new OverGrowl({public: 'growler2', unique: false, close_button: true, duration: 0, fade: 0, inline:false,
-          offset_x: 0,
-          css:`
-            #growler2-parent{
-              grid-row-gap: 1px;
-              opacity: 1;
-              background-color: #00000077;
-              border-radius: 15px;
-              left: 10px;
-              width: 300px;
-            }
-            .growler2-notice{
-              padding: 4px 0px 0px 0px;
-              border-width: 0px;
-            }
-            .growler2-notice>p{
-              font-size: 14px;
-              font-family: 'Brush Script MT', cursive;
-              font-weight: 400;
-              user-select: all;
-              cursor: copy;      
-            }
-        `});
+        // Our main instance.
+        ogrowler = new OverGrowl({ 
+          duration: 6000,
+          type_config: { error: { duration: 0, close_button:true, flicker: true, icon_flicker: false }}
+        });
+        // A second instance that uses the same parent, but creates it's own CSS copy.
+        ogrowler3 = new OverGrowl({ name: 'growler3', duration:12000, fade: 4000 });
+
+        // An example of an embedded growl parent, ie., not floating above everything.
+        ogrowler4 = new OverGrowl({ target: 'embedded_growl', name: 'growler4', close_button: true, duration: 0});
+
+        // An example of embedding growls into the top of the demo are, acting as a banner.
+        ogrowler5 = new OverGrowl({ 
+           name: 'growler5', inline: false,  unique: false, close_button: true,
+           icon_flicker: false, duration: 0, banner: true,
+        });
+ 
+        // An example of embedding growls into the top of the demo area, acting as a banner.
+        ogrowler6 = new OverGrowl({ 
+           target: 'examples', inline: true, unique: false, close_button: true,
+           icon_flicker: false, duration: 0, banner: true,
+        });
+ 
+        // Opens a left sided, independent floating element with it's own message queue.
+        ogrowler2 = new OverGrowl({ 
+              name: 'growler2', inline:false,
+              unique: false, close_button: true, duration: 0, 
+              fade: 1000, offset_x: 0, icon_flicker: true,
+              css:`
+                #growler2-parent{
+                  visibility: hidden;
+                  position: fixed;
+                  grid-row-gap: 8px;
+                  opacity: 1;
+                  background-color: #DDDDDD77;
+                  border-radius: 15px;
+                  left: 10px;
+                }
+                .growler2-notice{
+                  background: linear-gradient(to bottom, #66666650 0%, #FFFFFF50 20% 80%, #66666650 100%);
+                  border-width: 0px;
+                  border-radius: 24px 15px 24px 24px;
+                  font-size: 18px;
+                  font-family: 'Brush Script MT';
+                  font-weight: bold;
+                  margin-left: 5px;
+                  padding: 5px;
+                }
+              `
+        });
       })
+
       function add_think1(growly) {
         window[growly].add_type('thinking',{},`
           border-color: rgb(60, 60, 80);
           background-color: #000000;
           color: #DDDDDD;
         `,`
+          animation: think-rotate 6s infinite linear , 2s ease-in-out infinite reverse icon_flash;
           width: 30px;
           height: 30px;
           background-image: url('./assets/overgrowl-gear.png');
           background-size: cover;      
-        `)
-        window[growly].success('Added "thinking" style to ' + growly + ' growler instance that will operate in the same display panel with different styles')
+        `,`
+        @keyframes think-rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `)
+        window[growly].og_thinking('Added "thinking" style to ' + growly + ' OverGrowl instance that will operate in the same display panel with different styles')
       }
       function add_think2(growly) {
-        window[growly].add_type('thinking',{},`
-          border-color: rgb(60, 60, 120);
-          background-color: #000030;
-          color: #DDDDFF;
-        `,`
-          background-image: url('./assets/overgrowl-gear.png');
-          background-size: cover;      
-        `)
-        window[growly].success('Added "thinking" style to ' + growly + ' growler instance that will operate in the same display panel with different styles')
+        window[growly].add_type('thinking',{},
+            ` 
+                border-color: rgb(60, 60, 180);
+                background-color: #000080;
+                color: #DDDDFF;
+            `,`
+                animation: think-rotate2 3s infinite linear;
+                background-image: url('./assets/overgrowl-gear.png');
+                background-size: cover;      
+            `,`
+              @keyframes think-rotate2 {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `
+        )
+        window[growly].og_thinking('Added "thinking" style to ' + growly + ' OverGrowl instance that will operate in the same display panel, but can have different styles and settings!')
       }
       function big_text() {
-        ogrowler.info(
-`<pre>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. In dapibus justo non mattis sollicitudin. 
+        ogrowler.success(
+`<pre>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In dapibus justo non mattis sollicitudin. 
 Integer nec semper nibh. Aenean cursus sem eu pretium vulputate. Vivamus lectus quam, pulvinar nec lacinia eget, 
 convallis vitae mauris. Fusce vitae nunc est. Nunc dapibus, turpis id porttitor semper, turpis diam gravida massa,
 eu viverra diam neque vel elit. Aliquam elit libero, molestie eu molestie et, convallis et justo.
@@ -128,26 +249,14 @@ imperdiet. Sed egestas tellus sem, mollis lobortis ex consectetur ac. Curabitur 
 Phasellus auctor diam sit amet velit maximus, sit amet vehicula tortor congue. Aenean semper accumsan dapibus. Nunc 
 eget pretium lectus. Sed magna est, condimentum ac elementum id, placerat at nunc. Etiam faucibus vitae nunc eu 
 imperdiet. Etiam ac est nec risus consequat molestie. Fusce urna orci, viverra non fermentum id, condimentum quis 
-nisi. Nullam accumsan purus in malesuada viverra. In et quam mi. Aenean et est sed turpis pretium maximus. 
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. In dapibus justo non mattis sollicitudin. 
-Integer nec semper nibh. Aenean cursus sem eu pretium vulputate. Vivamus lectus quam, pulvinar nec lacinia eget, 
-convallis vitae mauris. Fusce vitae nunc est. Nunc dapibus, turpis id porttitor semper, turpis diam gravida massa,
-eu viverra diam neque vel elit. Aliquam elit libero, molestie eu molestie et, convallis et justo.
-
-Sed risus libero, luctus non facilisis in, dapibus dapibus massa. Etiam eu molestie nunc, vitae rutrum arcu. Donec 
-vel mattis augue. Quisque diam magna, finibus eu mauris ac, elementum accumsan purus. In hac habitasse platea 
-dictumst. Vivamus tempor ex dolor, et vulputate massa volutpat in. Donec imperdiet id lectus a pharetra. Maecenas 
-facilisis, arcu et pretium eleifend, risus eros elementum urna, sit amet faucibus libero arcu mollis nibh. Nunc 
-dignissim enim sed sodales pellentesque. Aenean imperdiet urna quam, id auctor metus egestas et. Sed in tincidunt 
-arcu. Duis mollis feugiat velit id rhoncus.
-</pre>`,{ close_button: true, duration: 0 });
+nisi. Nullam accumsan purus in malesuada viverra. In et quam mi. Aenean et est sed turpis pretium maximus.
+</pre>`,{ close_button: true, duration: 0, fade: 0 });
       }
 
       function change_css(growly) {
         var obj = window[growly]
         var outcss = `
-          .${obj.name}-notice {
+          .${obj.name}-notice.basic {
               border-width: 4px;
               border-style: solid;
               border-radius: 15px;
@@ -159,57 +268,20 @@ arcu. Duis mollis feugiat velit id rhoncus.
         obj.append_css(outcss);
       }
 
+      function toggle_features(id) {
+        let f = document.getElementById('features')
+        let e = document.getElementById(id)
+        if (e.textContent == 'Hide Features') {
+          f.style.display = "none"
+          e.textContent = 'Show Features'
+        } else {
+          f.style.display = "block"
+          e.textContent = 'Hide Features'          
+        }
+      }
+
       var long_text = ''
 + '“You open the gates of the soul to let the dark flood of chaos flow into your order and meaning. If you marry the ordered to the chaos you produce the divine child, the supreme meaning beyond meaning and meaninglessness.”'
 + '<br>― C.G. Jung, The Red Book';
-    </script>
-  </head>
-  <body class="app">
-    <div class="grid">
-      <div class="item shadow modal">
-        <div class="details" id="details">
-          <strong>OverGrowl v1.1</strong> by <a href="http://www.roguesignal.io" target="_BLANK_">RogueSignal.IO</a> | 
-          <a href="https://github.com/RogueSignalio/overGrowl" target="_BLANK_">  Git Project</a><br>
-          Simple, clean and flexible growl style notification component.<br>
-          <ul>
-          <li> Default images and style all embedded in one JS file.
-          <li> Timing options & programmatic style overrides.
-          <li> Expand with new types beyond alert,error,info,success,system and basic.
-          <li> Prevents (by default) duplication of messages in view.
-          <li> HTML content enabled.  
-          <li> Option for text auto select for copy.
-          <li> Close on panel, close X button and/or timed close
-          <li> Floats left, right, or embed in element.
-          <li> And much more - View this source for examples init
-          </ul>
-          <button onclick="ogrowler.success('Well done, you won!');">Success</button>
-          <button onclick="ogrowler.info('We are here to inform you of important stuff.');">Info</button>
-          <button onclick="ogrowler.system('System going down for maintenance');">System</button>
-          <button onclick="ogrowler.alert('This is an alert');">Alert</button>
-          <button onclick="ogrowler.error('OMG!  <span style=color:#FF0000;>Bad things!</span>  Bad things!  This error is unique and will not timeout.');">Error</button>
-          <button onclick="ogrowler.growl_type(null,'No style here, baby!');">No Style</button>
-          <br>
-          <button onclick="big_text()">Big Text</button>
-          <button onclick="change_css('ogrowler'); ogrowler.growl_type(null,'New style here, baby!');">Change Style</button>
-          <button onclick="ogrowler.reset_css(); ogrowler.growl_type(null,'Old style here, baby!');">Reset Style</button>
-          <br>
-          <button onclick="ogrowler.info(long_text,{ duration: 9000});">Long text + custom duration</button>
-          <br>
-          <button onclick="for (const e of [1,2,3]) { ogrowler2.system('System going down for maintenance ... fast!'); }">NoUnique,NoFade,NoTimeout,CloseButton,Unique CSS</button>
-          <br>
-          <button onclick="add_think1('ogrowler');">New "thinking" type w/style.</button> ➔ 
-          <button onclick="ogrowler.growl_type('thinking','Dave, I was thinking ... ',{ close_button: true });">Thinking -Safe</button>
-          <button onclick="ogrowler.thinking('Dave?  Can you hear me, Dave?',{ close_button: true });">Thinking -Unsafe</button>
-          <br>
-          <button onclick="add_think2('ogrowler3');">New "thinking" type on 2nd instance.</button> ➔ 
-          <button onclick="ogrowler3.growl_type('thinking','Dave, I was thinking ... ',{ close_button: true });">Thinking -Safe</button>
-          <button onclick="ogrowler3.thinking('Dave?  Can you hear me, Dave?',{ close_button: true });">Thinking -Unsafe</button>
-          <br>
-          <button onclick="for (const e of [1,2,3]) { ogrowler4.error('This is an alert embedded in inner div: ' + `${e}`); }">Inside Element</button>
-          <button onclick="ogrowler.clearGrowls();ogrowler2.clearGrowls();ogrowler3.clearGrowls();ogrowler4.clearGrowls();">Clear Growls</button>
-          <div id="embedded_growl" style="width:50%;overflow-y:auto;max-height: 100px;"></div>
-        </div>
-      </div>
-    </div>
-  </body>
+    </script>  
 </html>
