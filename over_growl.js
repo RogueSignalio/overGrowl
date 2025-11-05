@@ -342,8 +342,7 @@ class OverGrowl {
               scrollbar-color: #EEEEEE60 #00000050;
               scrollbar-width: thin;
               margin-top: 20px;
-              font-size: 14px;
-              font-weight: bold;
+              margin-bottom: 20px;
           }
           .${this.name}-text>pre{
               margin-top: 5px;
@@ -366,7 +365,7 @@ class OverGrowl {
               opacity: 0;
               font-size: 14px;
               font-family: korolev-compressed, sans-serif;
-              font-weight: 500;
+              font-weight: 700;
               background: linear-gradient(to bottom, rgba(255,255,255,0.2) -2%, rgba(0,0,0,0.2) 102%);
               margin: 8px;
               margin-top: 0px;
