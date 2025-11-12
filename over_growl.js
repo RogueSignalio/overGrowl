@@ -63,7 +63,13 @@ class OverGrowl {
   add_type(type,options={},noticecss='',iconcss='',textcss='',rawcss='') {
     this[`og_${type}`] = (msg,options={}) => { this.growl_type(type,msg,options) }
     this.options.type_config[type] = options
-    this.apply_type_styles(type,noticecss,iconcss,textcss,rawcss)
+    // this.apply_type_styles(type,noticecss,iconcss,textcss,rawcss)
+    this.apply_type_style(type,'notice',noticecss)
+    this.apply_type_style(type,'text',textcss)
+    this.apply_type_style(type,'icon',iconcss)
+    this.apply_css(this.name + '_' + type +'_style',`
+      ${rawcss}
+    `);
   }
 
   apply_type_styles(type,noticecss='',iconcss='',textcss='',rawcss='') {
@@ -83,10 +89,21 @@ class OverGrowl {
     )
   }
 
-  add_css_class(type,name,where='notice',css=null) {
+  apply_type_style(type,to='notice',css=null) {
+    if (css) { 
+      let to_css = `
+        .${this.name}-${to}.${type}{
+          ${css}
+        }
+      `
+      this.apply_css(this.name + '_' + type +'_style', to_css)
+    }
+  }
+
+  add_css_class(type,name,to='notice',css=null) {
     if (!this.classes[type]) { this.classes[type] = {}; }
-    if (!this.classes[type][where]) { this.classes[type][where] = []; }
-    this.classes[type][where].push(name)  
+    if (!this.classes[type][to]) { this.classes[type][to] = []; }
+    this.classes[type][to].push(name)  
     if (css) {
       this.prepend_css(css)
     }
@@ -99,7 +116,6 @@ class OverGrowl {
       document.head.appendChild(s);
     }
     s.insertBefore(document.createTextNode(css), s.firstChild )
-//    s.appendChild(document.createTextNode(css))
     return s
   }
 
@@ -360,18 +376,19 @@ class OverGrowl {
               color: #DD2222;
               border-style: solid;
               border-radius: 0px 10px 0px 5px;
-              border-color: #AA222288;
+              border-color: #882222BB;
               border-width:0px 0px 2px 2px;
               text-align:center;
               position: absolute;
               width:16px;
               right: 0px;
               top: 0px;
-              opacity: 0.9;
+              opacity: 0.95;
               user-select: none;
               cursor: pointer;      
-              background-color: #FF555566;
-              margin-bottom: 20px;
+              background-color: #FF555544;
+              padding-top: 2px;
+              padding-bottom: 2px;
           }
           .${this.name}-text{
               width: 100%;
@@ -388,8 +405,7 @@ class OverGrowl {
               margin-top: 0px;
           }
           .${this.name}-notice{
-              padding: 2px 2px 2px 2px;
-              padding-right: 16px;
+              padding: 2px 18px 2px 2px;
               display: grid;
               grid-template-columns: auto auto;
               grid-column-gap: 0px;
