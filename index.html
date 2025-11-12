@@ -145,7 +145,7 @@
           type_config: { error: { duration: 0, close_button:true, flicker: true, icon_flicker: false }}
         });
         // A second instance that uses the same parent, but creates it's own CSS copy.
-        ogrowler3 = new OverGrowl({ name: 'growler3', duration:12000, fade: 4000 });
+        ogrowler3 = new OverGrowl({ name: 'growler3', duration:8000, fade: 4000 });
 
         // An example of an embedded growl parent, ie., not floating above everything.
         ogrowler4 = new OverGrowl({ target: 'embedded_growl', name: 'growler4', close_button: true, duration: 0});
@@ -203,6 +203,8 @@
           background-image: url('./assets/overgrowl-gear.png');
           background-size: cover;      
         `,`
+          color: #ABCDDE;
+        `,`
         @keyframes think-rotate {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -221,12 +223,18 @@
                 background-image: url('./assets/overgrowl-gear.png');
                 background-size: cover;      
             `,`
+                font-size: 12px;
+            `,`
               @keyframes think-rotate2 {
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
               }
             `
         )
+        window[growly].add_css_class('thinking','my_style_class','text',`.my_style_class {
+          color: #FFAA88;
+        }
+        `)
         window[growly].og_thinking('Added "thinking" style to ' + growly + ' OverGrowl instance that will operate in the same display panel, but can have different styles and settings!')
       }
       function big_text() {

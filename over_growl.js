@@ -41,6 +41,7 @@ class OverGrowl {
     this.element = e
     this.parent.counter ||= 0
     this.parent.growls = []
+    this.classes = {}
 
     // Set up methods by built-in type names.
     for(let type of ['success','alert','info','system','error','growl','basic','negative']) {
@@ -59,14 +60,13 @@ class OverGrowl {
     this.growler({ type: type, message: msg },options)
   }
 
-  add_type(type,options={},noticecss='',iconcss='',rawcss='') {
+  add_type(type,options={},noticecss='',iconcss='',textcss='',rawcss='') {
     this[`og_${type}`] = (msg,options={}) => { this.growl_type(type,msg,options) }
     this.options.type_config[type] = options
-    this.apply_type_style(type,noticecss,iconcss,rawcss)
+    this.apply_type_styles(type,noticecss,iconcss,textcss,rawcss)
   }
 
-  apply_type_style(type,noticecss='',iconcss='',rawcss='') {
-    console.log(this.name + '_' + type +'_style')
+  apply_type_styles(type,noticecss='',iconcss='',textcss='',rawcss='') {
     this.apply_css(this.name + '_' + type +'_style',
       `
         .${this.name}-notice.${type}{
@@ -75,25 +75,43 @@ class OverGrowl {
         .${this.name}-icon.${type}{
           ${iconcss}
         }
+        .${this.name}-text.${type}{
+          ${textcss}
+        }
         ${rawcss}
       `
     )
   }
 
-  apply_css(id=`${this.name}_style`, style=this.default_style()) {
-    console.log(id)
+  add_css_class(type,name,where='notice',css=null) {
+    if (!this.classes[type]) { this.classes[type] = {}; }
+    if (!this.classes[type][where]) { this.classes[type][where] = []; }
+    this.classes[type][where].push(name)  
+    if (css) {
+      this.prepend_css(css)
+    }
+  }
+
+  apply_css(id=`${this.name}_style`, css=this.default_style()) {
     var s = document.getElementById(id)
     if (s == null) { 
       s = Object.assign(document.createElement('style'), { id: id, type: 'text/css' }) 
       document.head.appendChild(s);
     }
-    s.appendChild(document.createTextNode(style))
+    s.insertBefore(document.createTextNode(css), s.firstChild )
+//    s.appendChild(document.createTextNode(css))
     return s
   }
 
-  append_css(style="") {
+  append_css(css="") {
     var s = document.getElementById(`${this.name}_style`)
-    s.appendChild(document.createTextNode(style))
+    s.appendChild(document.createTextNode(css))
+    return s
+  }
+
+  prepend_css(css="") {
+    var s = document.getElementById(`${this.name}_style`)
+    s.insertBefore(document.createTextNode(css), s.firstChild )
     return s
   }
 
@@ -158,17 +176,36 @@ class OverGrowl {
       flicker = 'flicker'      
     }
 
-    var grDiv = Object.assign(document.createElement('div'),{ classList: `growler-notice ${this.name}-notice ${data.type} ${flicker}` })
-    var textArea = Object.assign(document.createElement('p'),{ classList: `growler-text ${this.name}-text`})
+    // This next section preps appended class names to be applied to elements.
+    // TODO: The code here is lengthy and pedantic.  Replace.
+    var notice_classes = ''
+    var text_classes = ''
+    var icon_classes = ''
+    var close_classes = ''
+    if (this.classes[data.type] && this.classes[data.type]['notice']) {
+      notice_classes = this.classes[data.type]['notice'].join(' ')
+    }
+    if (this.classes[data.type] && this.classes[data.type]['text']) {
+      text_classes = this.classes[data.type]['text'].join(' ')
+    }
+    if (this.classes[data.type] && this.classes[data.type]['icon']) {
+      icon_classes = this.classes[data.type]['icon'].join(' ')
+    }
+    if (this.classes[data.type] && this.classes[data.type]['close']) {
+      close_classes = this.classes[data.type]['close'].join(' ')
+    }
+
+    var grDiv = Object.assign(document.createElement('div'),{ classList: `growler-notice ${this.name}-notice ${data.type} ${flicker} ${notice_classes}` })
+    var textArea = Object.assign(document.createElement('p'),{ classList: `${text_classes} growler-text ${this.name}-text ${data.type}`})
     grDiv.append(
-      Object.assign(document.createElement('div'),{ classList: `growler-icon ${this.name}-icon ${data.type} ${icon_flicker}`}),
+      Object.assign(document.createElement('div'),{ classList: `growler-icon ${this.name}-icon ${data.type} ${icon_flicker} ${icon_classes}`}),
       Object.assign(textArea,{ innerHTML: data.message }),
     )
     grDiv.hash = hash
     var closeElem = grDiv
     if (options.close_button) {
       closeElem = document.createElement('div')
-      Object.assign(closeElem,{ classList: `growler-close ${this.name}-close`, innerHTML: '🗙' }) //'&#10006;' })
+      Object.assign(closeElem,{ classList: `growler-close ${this.name}-close ${close_classes}`, innerHTML: '🗙' }) //'&#10006;' })
       grDiv.append(closeElem);
     }
 
@@ -330,7 +367,7 @@ class OverGrowl {
               width:16px;
               right: 0px;
               top: 0px;
-              opacity: 0.9;
+              opacity: 0.93;
               user-select: none;
               cursor: pointer;      
               background-color: #FF555566;
@@ -343,6 +380,9 @@ class OverGrowl {
               scrollbar-width: thin;
               margin-top: 20px;
               margin-bottom: 20px;
+              font-size: 14px;
+              font-family: korolev-compressed, sans-serif;
+              font-weight: bold;
           }
           .${this.name}-text>pre{
               margin-top: 5px;
@@ -365,7 +405,7 @@ class OverGrowl {
               opacity: 0;
               font-size: 14px;
               font-family: korolev-compressed, sans-serif;
-              font-weight: 700;
+              font-weight: bold;
               background: linear-gradient(to bottom, rgba(255,255,255,0.2) -2%, rgba(0,0,0,0.2) 102%);
               margin: 8px;
               margin-top: 0px;
