@@ -60,33 +60,47 @@ class OverGrowl {
     this.growler({ type: type, message: msg },options)
   }
 
-  add_type(type,options={},noticecss='',iconcss='',textcss='',rawcss='') {
+  add_type(type,options={},notice_css=null,icon_css=null,text_css=null,raw_css=null) {
     this[`og_${type}`] = (msg,options={}) => { this.growl_type(type,msg,options) }
     this.options.type_config[type] = options
     // this.apply_type_styles(type,noticecss,iconcss,textcss,rawcss)
-    this.apply_type_style(type,'notice',noticecss)
-    this.apply_type_style(type,'text',textcss)
-    this.apply_type_style(type,'icon',iconcss)
-    this.apply_css(this.name + '_' + type +'_style',`
-      ${rawcss}
+    let final_notice_css = !!options['notice_css'] ? options['notice_css'] : notice_css
+    !!final_notice_css && this.apply_type_style(type,'notice',final_notice_css)
+
+    let final_text_css = !!options['text_css'] ? options['text_css'] : text_css
+    !!final_text_css && this.apply_type_style(type,'text',final_text_css)
+
+    let final_icon_css = !!options['icon_css'] ? options['icon_css'] : icon_css
+    !!final_icon_css && this.apply_type_style(type,'icon',final_icon_css)
+
+    let final_raw_css = !!options['raw_css'] ? options['raw_css'] : raw_css
+    !!final_raw_css && this.apply_css(this.name + '_' + type +'_style',`
+      ${final_raw_css}
     `);
   }
 
-  apply_type_styles(type,noticecss='',iconcss='',textcss='',rawcss='') {
-    this.apply_css(this.name + '_' + type +'_style',
-      `
-        .${this.name}-notice.${type}{
-          ${noticecss}
-        }
-        .${this.name}-icon.${type}{
-          ${iconcss}
-        }
-        .${this.name}-text.${type}{
-          ${textcss}
-        }
-        ${rawcss}
-      `
-    )
+  apply_type_styles(type,notice_css=null,icon_css=null,text_css=null,raw_css=null) {
+    !!notice_css && this.apply_css(this.name + '_' + type +'_style',`
+      .${this.name}-notice.${type}{
+        ${notice_css}
+      }
+    `)
+
+    !!icon_css && this.apply_css(this.name + '_' + type +'_style',`
+      .${this.name}-icon.${type}{
+        ${icon_css}
+      }
+    `)
+
+    !!text_css && this.apply_css(this.name + '_' + type +'_style',`
+      .${this.name}-text.${type}{
+        ${text_css}
+      }
+    `)
+
+    !!raw_css && this.apply_css(this.name + '_' + type +'_style',`
+      ${raw_css}
+    `)
   }
 
   apply_type_style(type,to='notice',css=null) {

@@ -203,39 +203,47 @@
         });
       })
 
+      // First example of calling .add_type(), passing css with options.
       function add_think1(growly) {
-        window[growly].add_type('thinking',{},`
-          border-color: rgb(60, 60, 80);
-          background-color: #000000;
-          color: #DDDDDD;
-        `,`
-          animation: think-rotate 6s infinite linear , 2s ease-in-out infinite reverse icon_flash;
-          width: 30px;
-          height: 30px;
-          background-image: url('./assets/overgrowl-gear.png');
-          background-size: cover;      
-        `,`
-          color: #ABCDDE;
-        `,`
-        @keyframes think-rotate {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `)
+        window[growly].add_type('thinking',{
+            notice_css: `
+              border-color: rgb(60, 60, 80);
+              background-color: #000000;
+              color: #DDDDDD;              
+            `,
+            text_css: `
+              color: #C0D0DE;
+            `,
+            icon_css: `
+              animation: think-rotate 6s infinite linear , 2s ease-in-out infinite reverse icon_flash;
+              width: 30px;
+              height: 30px;
+              background-image: url('./assets/overgrowl-gear.png');
+              background-size: cover;
+            `,
+            raw_css: `
+              @keyframes think-rotate {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `
+        })
         window[growly].og_thinking('Added "thinking" style to ' + growly + ' OverGrowl instance that will operate in the same display panel with different styles')
       }
+
+      // Second example of calling .add_type(), passing css outside of options.
       function add_think2(growly) {
         window[growly].add_type('thinking',{},
             ` 
                 border-color: rgb(60, 60, 180);
                 background-color: #000080;
-                color: #DDDDFF;
             `,`
                 animation: think-rotate2 3s infinite linear;
                 background-image: url('./assets/overgrowl-gear.png');
                 background-size: cover;      
             `,`
                 font-size: 12px;
+                color: #AACCFF;
             `,`
               @keyframes think-rotate2 {
                 0% { transform: rotate(0deg); }
