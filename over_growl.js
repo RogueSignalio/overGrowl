@@ -347,7 +347,7 @@ class OverGrowl {
               z-index: -1000;
               width: calc(100vw - 40px);
               max-width: 340px;
-              opacity: 0.9;
+              opacity: 0.95;
               user-select: unset;
               cursor: pointer;
           }
@@ -367,28 +367,29 @@ class OverGrowl {
               width:16px;
               right: 0px;
               top: 0px;
-              opacity: 0.93;
+              opacity: 0.9;
               user-select: none;
               cursor: pointer;      
               background-color: #FF555566;
+              margin-bottom: 20px;
           }
           .${this.name}-text{
               width: 100%;
-/*              min-width: 260px; */
               overflow: auto;
               scrollbar-color: #EEEEEE60 #00000050;
               scrollbar-width: thin;
-              margin-top: 20px;
-              margin-bottom: 20px;
+              margin-top: 14px;
+              margin-bottom: 14px;
               font-size: 14px;
               font-family: korolev-compressed, sans-serif;
               font-weight: bold;
           }
           .${this.name}-text>pre{
-              margin-top: 5px;
+              margin-top: 0px;
           }
           .${this.name}-notice{
               padding: 2px 2px 2px 2px;
+              padding-right: 16px;
               display: grid;
               grid-template-columns: auto auto;
               grid-column-gap: 0px;
@@ -433,13 +434,13 @@ class OverGrowl {
           .${this.name}-notice.alert{
               border-color: rgb(152, 132, 37);
               background-color: #ffdfAA;
-              color: #444422;
+              color: #884422;
               font-weight: bold;
           }
           .${this.name}-notice.error{
               border-color: rgb(152, 37, 37);
               background-color: #ffBBBB;
-              color: #552222;
+              color: #884422;
               font-weight: bold;
           }
           .${this.name}-notice.info{
