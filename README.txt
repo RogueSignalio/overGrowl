@@ -145,11 +145,11 @@ Styling can be updated with:
     `)
 
 Other methods:
-  .add_type(type_name,[options],[bubble_css],[icon_css],[raw_css])
-      Create a new growl type with options and styles.
+  .add_type(type_name,[options],[notice_css],[icon_css],[text_css],[raw_css])
+      Create a new growl type with options and styles.  CSS can be defined as parameters, or options (notice_css, text_css, icon_css, raw_css).
       Notice!!!: A new method is added to the growler instance, called 'og_<type_name>', or you can still call
       growl_type, growl, and growler methods.
-  .apply_type_style(type_name,[bubble_css],[icon_css],[raw_css])
+  .apply_type_style(type_name,[notice_css],[icon_css],[text_css],[raw_css])
       Apply a new style to a growl type.
   .apply_css(css_style_name, css_text)
       Append css to named style sheet.
@@ -180,7 +180,7 @@ Useful Attributes:
 OverGrowl without the inline CSS?:
   Don't like the chunky CSS being in the JS file?  Well, you can get rid of it, but every instance of a growler has a "name", set optionally by the "public" option.
 
-  Well, here is what you will need to do:
+  Well, here is what you probably need to do:
 
   1.> Download over_growl.js and change default_style() to something like:
           default_style() {
